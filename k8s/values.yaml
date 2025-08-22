@@ -1,0 +1,57 @@
+# NATS Server Kubernetes Deployment Values
+# Customize these values for your environment
+
+# Image configuration
+image:
+  repository: ghcr.io/ashishnaware/nats-server
+  tag: latest
+  pullPolicy: Always
+
+# Authentication
+auth:
+  username: admin
+  password: password123
+  # Generate with: echo -n "your_password" | base64
+
+# TLS Configuration (optional)
+tls:
+  enabled: false
+  # Set to true to enable TLS
+  # You'll need to provide certificates in tls-secret.yaml
+
+# Resources
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+# Storage
+storage:
+  size: "10Gi"
+  storageClass: "standard"
+
+# Replicas
+replicaCount: 1
+
+# Service configuration
+service:
+  type: ClusterIP
+  nodePort:
+    enabled: true
+    clientPort: 30422
+    httpPort: 30822
+
+# Monitoring
+monitoring:
+  enabled: true
+  port: 8222
+  path: /healthz
+
+# JetStream configuration
+jetstream:
+  enabled: true
+  maxMemory: "1GB"
+  maxFile: "10GB"

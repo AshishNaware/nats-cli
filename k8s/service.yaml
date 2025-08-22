@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-server
+  namespace: nats-system
+  labels:
+    app: nats-server
+spec:
+  type: ClusterIP
+  ports:
+  - name: client
+    port: 4222
+    targetPort: client
+    protocol: TCP
+  - name: http
+    port: 8222
+    targetPort: http
+    protocol: TCP
+  - name: cluster
+    port: 6222
+    targetPort: cluster
+    protocol: TCP
+  selector:
+    app: nats-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-server-nodeport
+  namespace: nats-system
+  labels:
+    app: nats-server
+    type: external
+spec:
+  type: NodePort
+  ports:
+  - name: client
+    port: 4222
+    targetPort: client
+    nodePort: 30422
+    protocol: TCP
+  - name: http
+    port: 8222
+    targetPort: http
+    nodePort: 30822
+    protocol: TCP
+  selector:
+    app: nats-server

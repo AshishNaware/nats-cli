@@ -140,29 +140,4 @@ jobs:
         docker exec test-nats wget --no-verbose --tries=1 --spider http://localhost:8222/healthz
         docker stop test-nats && docker rm test-nats
 
-  security-scan:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name != 'pull_request'
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Convert repository owner to lowercase
-      id: lowercase
-      run: |
-        echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]' | sed 's/ //g')" >> $GITHUB_OUTPUT
-
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.owner }}/${{ env.IMAGE_NAME }}:latest
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'

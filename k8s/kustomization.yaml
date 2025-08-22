@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: nats-system
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  - tls-secret.yaml
+
+commonLabels:
+  app: nats-server
+  version: v1
+
+images:
+  - name: ghcr.io/ashishnaware/nats-server
+    newName: nats-server
+    newTag: latest

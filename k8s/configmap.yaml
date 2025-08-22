@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-server-config
+  namespace: nats-system
+data:
+  nats-server.conf: |
+    # NATS Server Configuration for Kubernetes
+    # This configuration supports credentials and provides secure defaults
+
+    # Server name and cluster configuration
+    server_name: "nats-server"
+    server_tags: ["kubernetes", "production"]
+
+    # Network configuration
+    port: 4222
+    http_port: 8222
+    http: "0.0.0.0:8222"
+
+    # Logging configuration
+    logtime: true
+    debug: false
+    trace: false
+    log_file: "/var/log/nats/nats-server.log"
+
+    # JetStream configuration
+    jetstream {
+        store_dir: "/var/lib/nats/jetstream"
+        max_mem: 1GB
+        max_file: 10GB
+    }
+
+    # Authentication configuration
+    # Username/Password authentication (configured via environment variables)
+    authorization {
+        user: "${NATS_USER}"
+        password: "${NATS_PASSWORD}"
+        timeout: 2.0
+    }
+
+    # TLS configuration (configured via environment variables)
+    # Uncomment and configure for production use
+    # tls {
+    #     cert_file: "/etc/nats/certs/server-cert.pem"
+    #     key_file: "/etc/nats/certs/server-key.pem"
+    #     ca_file: "/etc/nats/certs/ca.pem"
+    #     verify: true
+    # }
+
+    # Cluster configuration (for clustering)
+    # cluster {
+    #     port: 6222
+    #     listen: 0.0.0.0:6222
+    #     name: "nats-cluster"
+    #     authorization {
+    #         user: "cluster_user"
+    #         password: "cluster_password"
+    #         timeout: 2.0
+    #     }
+    #     routes = [
+    #         "nats://cluster_user:cluster_password@nats-server-1:6222"
+    #     ]
+    # }
+
+    # Monitoring and metrics
+    http: "0.0.0.0:8222"
+    server_name: "nats-server"
+
+    # Limits and timeouts
+    max_connections: 65536
+    max_subscriptions: 0
+    max_payload: 1048576
+    max_control_line: 4096
+    ping_interval: 120s
+    ping_max: 2
+
+    # Write deadline
+    write_deadline: "2s"

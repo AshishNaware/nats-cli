@@ -346,3 +346,36 @@ quick-stop: stop clean-images ## Quick stop: stop and clean images
 
 quick-release: build push ## Quick release: build and push to ghcr.io
 	@echo "$(GREEN)Quick release completed!$(NC)"
+
+# Kubernetes targets
+k8s-setup: ## Setup NATS server on existing Kubernetes cluster
+	@echo "$(BLUE)Setting up NATS server on existing Kubernetes cluster...$(NC)"
+	./k8s/scripts/setup-kind.sh
+
+k8s-deploy: ## Deploy NATS server to existing cluster
+	@echo "$(BLUE)Deploying NATS server to Kubernetes...$(NC)"
+	kubectl apply -f k8s/
+
+k8s-delete: ## Delete NATS server from cluster
+	@echo "$(YELLOW)Deleting NATS server from Kubernetes...$(NC)"
+	kubectl delete -f k8s/ --ignore-not-found=true
+
+k8s-cleanup: ## Cleanup Kind cluster and all resources
+	@echo "$(BLUE)Cleaning up Kind cluster...$(NC)"
+	./k8s/scripts/cleanup.sh
+
+k8s-tls: ## Generate TLS certificates for NATS server
+	@echo "$(BLUE)Generating TLS certificates...$(NC)"
+	./k8s/scripts/generate-tls.sh
+
+k8s-status: ## Check NATS server status in cluster
+	@echo "$(BLUE)NATS Server Status:$(NC)"
+	@kubectl get pods,svc -n nats-system -l app=nats-server
+	@echo ""
+	@echo "$(BLUE)Pod logs:$(NC)"
+	@kubectl logs -n nats-system -l app=nats-server --tail=10
+
+k8s-port-forward: ## Port forward NATS services
+	@echo "$(BLUE)Port forwarding NATS services...$(NC)"
+	@echo "$(YELLOW)Press Ctrl+C to stop port forwarding$(NC)"
+	kubectl port-forward svc/nats-server-nodeport 30422:4222 30822:8222 -n nats-system

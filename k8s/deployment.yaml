@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-server
+  namespace: nats-system
+  labels:
+    app: nats-server
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-server
+  template:
+    metadata:
+      labels:
+        app: nats-server
+        version: v1
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: nats-server
+        image: ghcr.io/ashishnaware/nats-server:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: client
+          containerPort: 4222
+          protocol: TCP
+        - name: http
+          containerPort: 8222
+          protocol: TCP
+        - name: cluster
+          containerPort: 6222
+          protocol: TCP
+        env:
+        - name: NATS_USER
+          valueFrom:
+            secretKeyRef:
+              name: nats-auth-secret
+              key: username
+        - name: NATS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nats-auth-secret
+              key: password
+        - name: NATS_SERVER_NAME
+          value: "nats-server"
+        - name: NATS_DEBUG
+          value: "false"
+        - name: NATS_TRACE
+          value: "false"
+        volumeMounts:
+        - name: nats-config
+          mountPath: /etc/nats/nats-server.conf
+          subPath: nats-server.conf
+        - name: nats-data
+          mountPath: /var/lib/nats
+        - name: nats-logs
+          mountPath: /var/log/nats
+        - name: nats-certs
+          mountPath: /etc/nats/certs
+          readOnly: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 30
+      volumes:
+      - name: nats-config
+        configMap:
+          name: nats-server-config
+      - name: nats-data
+        persistentVolumeClaim:
+          claimName: nats-data-pvc
+      - name: nats-logs
+        emptyDir: {}
+      - name: nats-certs
+        secret:
+          secretName: nats-tls-secret
+          optional: true

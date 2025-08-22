@@ -40,6 +40,9 @@ make quick-stop
 
 # Publish to GitHub Container Registry
 make quick-release
+
+# Kubernetes deployment
+make k8s-setup
 ```
 
 ### Manual Build and Run
@@ -373,6 +376,48 @@ curl http://localhost:8222/healthz
 3. Make your changes
 4. Test thoroughly
 5. Submit a pull request
+
+## Kubernetes Deployment
+
+The project includes comprehensive Kubernetes manifests for deploying NATS server in any Kubernetes environment.
+
+### Quick Start with Kubernetes
+
+```bash
+# 1. Ensure you have a Kubernetes cluster running
+# (Kind, Minikube, Docker Desktop, etc.)
+
+# 2. Setup NATS server on existing cluster
+make k8s-setup
+
+# 3. Check deployment status
+make k8s-status
+
+# 4. Port forward for external access
+make k8s-port-forward
+
+# 5. Cleanup
+make k8s-cleanup
+```
+
+### Features
+
+- **Configurable Authentication**: Username/password via Kubernetes secrets
+- **TLS Support**: Self-signed certificate generation for secure communication
+- **Persistent Storage**: JetStream data persistence with PVC
+- **Health Checks**: Liveness, readiness, and startup probes
+- **Resource Management**: Configurable CPU and memory limits
+- **Monitoring**: HTTP endpoints for health checks and metrics
+- **Security**: Non-root user, security contexts, and network policies
+
+### Configuration
+
+- **Authentication**: Update `k8s/secret.yaml` with your credentials
+- **TLS**: Generate certificates with `make k8s-tls`
+- **Resources**: Modify `k8s/values.yaml` for custom configurations
+- **Storage**: Adjust PVC size and storage class in `k8s/pvc.yaml`
+
+For detailed instructions, see [k8s/README.md](k8s/README.md).
 
 ## License
 
