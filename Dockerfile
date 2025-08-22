@@ -12,7 +12,7 @@ RUN git clone https://github.com/nats-io/nats-server.git && \
     go build -o nats-server
 
 # Final stage
-FROM alpine:3.18
+FROM alpine:3.19
 
 # Install runtime dependencies
 RUN apk add --no-cache ca-certificates tzdata
