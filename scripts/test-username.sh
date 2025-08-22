@@ -18,8 +18,8 @@ echo ""
 ORIGINAL_USERNAME=$(git config user.name)
 echo -e "${YELLOW}Original username: ${ORIGINAL_USERNAME}${NC}"
 
-# Convert to lowercase and remove spaces
-CONVERTED_USERNAME=$(echo "$ORIGINAL_USERNAME" | tr '[:upper:]' '[:lower:]' | sed 's/ //g')
+# Convert to lowercase and remove spaces and invalid Docker characters
+CONVERTED_USERNAME=$(echo "$ORIGINAL_USERNAME" | tr '[:upper:]' '[:lower:]' | sed 's/ //g' | sed 's/[^a-z0-9._-]//g')
 echo -e "${GREEN}Converted username: ${CONVERTED_USERNAME}${NC}"
 
 # Test Docker tag format

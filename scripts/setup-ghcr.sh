@@ -23,8 +23,8 @@ if ! git config user.name > /dev/null 2>&1; then
     exit 1
 fi
 
-# Get GitHub username and ensure lowercase
-GITHUB_USERNAME=$(git config user.name | tr '[:upper:]' '[:lower:]' | sed 's/ //g')
+# Get GitHub username and ensure lowercase and Docker-compatible
+GITHUB_USERNAME=$(git config user.name | tr '[:upper:]' '[:lower:]' | sed 's/ //g' | sed 's/[^a-z0-9._-]//g')
 echo -e "${GREEN}Detected GitHub username: ${GITHUB_USERNAME}${NC}"
 echo -e "${YELLOW}Note: Username converted to lowercase for Docker compatibility${NC}"
 
