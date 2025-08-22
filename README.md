@@ -324,6 +324,41 @@ docker run -d \
 6. **Regularly update** the NATS server version
 7. **Monitor logs** for suspicious activity
 
+## Security Scanning
+
+The project includes automated security scanning using Trivy:
+
+```bash
+# Run security scan on the built image
+make security-scan
+
+# Force security scan with full output (for debugging)
+make security-scan-force
+```
+
+### Security Scan Features
+
+- **Automatic image building**: If the image doesn't exist, it will be built automatically
+- **Vulnerability detection**: Scans for HIGH and CRITICAL vulnerabilities
+- **Robust error handling**: Gracefully handles network connectivity issues
+- **Fallback validation**: Performs basic image functionality tests when trivy fails
+- **Clear reporting**: Provides detailed vulnerability information and remediation advice
+
+### Manual Security Scanning
+
+You can also run trivy manually:
+
+```bash
+# Install trivy (if not already installed)
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+# Scan the image
+trivy image ghcr.io/yourusername/nats-server:latest
+
+# Scan with specific severity filters
+trivy image --severity HIGH,CRITICAL ghcr.io/yourusername/nats-server:latest
+```
+
 ## Troubleshooting
 
 ### Using Makefile Commands
