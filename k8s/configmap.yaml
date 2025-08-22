@@ -33,8 +33,8 @@ data:
     # Authentication configuration
     # Username/Password authentication (configured via environment variables)
     authorization {
-        user: "${NATS_USER}"
-        password: "${NATS_PASSWORD}"
+        user: "admin"
+        password: "password123"
         timeout: 2.0
     }
 
