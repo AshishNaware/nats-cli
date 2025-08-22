@@ -5,7 +5,7 @@
 IMAGE_NAME ?= nats-server
 IMAGE_TAG ?= latest
 REGISTRY ?= ghcr.io/
-GITHUB_USERNAME ?= $(shell git config user.name | tr '[:upper:]' '[:lower:]' | sed 's/ //g')
+GITHUB_USERNAME ?= $(shell git config user.name | tr '[:upper:]' '[:lower:]' | sed 's/ //g' | sed 's/[^a-z0-9._-]//g')
 FULL_IMAGE_NAME = $(REGISTRY)$(GITHUB_USERNAME)/$(IMAGE_NAME):$(IMAGE_TAG)
 
 # Docker Compose files
