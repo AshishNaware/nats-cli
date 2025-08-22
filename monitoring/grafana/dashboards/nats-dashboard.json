@@ -1,0 +1,70 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "NATS Server Dashboard",
+    "tags": ["nats", "monitoring"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "NATS Connections",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "nats_connections",
+            "legendFormat": "Active Connections"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "list"
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "NATS Subscriptions",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "nats_subscriptions",
+            "legendFormat": "Active Subscriptions"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "NATS Messages/sec",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(nats_messages_total[5m])",
+            "legendFormat": "Messages/sec"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "NATS Bytes/sec",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(nats_bytes_total[5m])",
+            "legendFormat": "Bytes/sec"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "5s"
+  }
+}

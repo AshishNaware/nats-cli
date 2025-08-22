@@ -1,0 +1,50 @@
+{
+  "name": "nats-server-docker",
+  "version": "1.0.0",
+  "description": "NATS Server Docker image with credentials support",
+  "main": "index.js",
+  "scripts": {
+    "build": "make build",
+    "build:dev": "make build-dev",
+    "build:prod": "make build-prod",
+    "push": "make push",
+    "pull": "make pull",
+    "release": "make release",
+    "release:dev": "make release-dev",
+    "release:prod": "make release-prod",
+    "deploy": "make deploy",
+    "deploy:dev": "make deploy-dev",
+    "deploy:prod": "make deploy-prod",
+    "test": "make test",
+    "clean": "make clean",
+    "logs": "make logs",
+    "status": "make status",
+    "setup": "make setup-all",
+    "generate-keys": "make generate-keys",
+    "help": "make help"
+  },
+  "keywords": [
+    "nats",
+    "docker",
+    "container",
+    "messaging",
+    "microservices",
+    "credentials",
+    "authentication"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/nats-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/nats-cli/issues"
+  },
+  "homepage": "https://github.com/yourusername/nats-cli#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

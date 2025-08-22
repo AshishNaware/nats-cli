@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  nats-server:
+    build: .
+    container_name: nats-server
+    ports:
+      - "4222:4222"  # NATS client port
+      - "8222:8222"  # HTTP monitoring port
+    volumes:
+      # Mount configuration (optional)
+      - ./nats-server.conf:/etc/nats/nats-server.conf:ro
+      # Mount credentials directory (optional)
+      - ./creds:/etc/nats/creds:ro
+      # Mount certificates for TLS (optional)
+      - ./certs:/etc/nats/certs:ro
+      # Mount JWT directory (optional)
+      - ./jwt:/etc/nats/jwt:ro
+      # Persistent storage for JetStream
+      - nats-data:/var/lib/nats
+      # Logs
+      - nats-logs:/var/log/nats
+    environment:
+      - NATS_SERVER_NAME=nats-server
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8222/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: NATS CLI for management
+  nats-cli:
+    image: natsio/natscli:latest
+    container_name: nats-cli
+    depends_on:
+      - nats-server
+    environment:
+      - NATS_URL=nats://nats-server:4222
+    volumes:
+      # Mount credentials for CLI access
+      - ./creds:/etc/nats/creds:ro
+    command: ["sleep", "infinity"]
+
+volumes:
+  nats-data:
+    driver: local
+  nats-logs:
+    driver: local
+
+networks:
+  default:
+    name: nats-network
