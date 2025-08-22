@@ -1,46 +1,15 @@
-# Multi-stage build for NATS server with credentials
-FROM golang:1.21-alpine AS builder
+# Use official NATS server image as base
+FROM nats:2.10.7-alpine
 
-# Install build dependencies
-RUN apk add --no-cache git make
+# Install wget for health checks
+RUN apk update && apk add --no-cache wget || echo "Warning: Could not install wget"
 
-# Clone and build NATS server
-WORKDIR /go/src/github.com/nats-io
-RUN git clone https://github.com/nats-io/nats-server.git && \
-    cd nats-server && \
-    git checkout v2.10.7 && \
-    go build -o nats-server
+# Copy custom configuration
+COPY nats-server.conf /etc/nats/nats-server.conf
 
-# Final stage
-FROM alpine:3.19
-
-# Install runtime dependencies
-RUN apk add --no-cache ca-certificates tzdata
-
-# Create nats user and group
-RUN addgroup -g 1000 nats && \
-    adduser -D -s /bin/sh -u 1000 -G nats nats
-
-# Create necessary directories
-RUN mkdir -p /etc/nats /var/lib/nats /var/log/nats && \
-    chown -R nats:nats /etc/nats /var/lib/nats /var/log/nats
-
-# Copy NATS server binary from builder
-COPY --from=builder /go/src/github.com/nats-io/nats-server/nats-server /usr/local/bin/
-
-# Copy default configuration
-COPY --chown=nats:nats nats-server.conf /etc/nats/nats-server.conf
-
-# Create credentials directory
-RUN mkdir -p /etc/nats/creds && \
-    chown -R nats:nats /etc/nats/creds && \
-    chmod 700 /etc/nats/creds
-
-# Switch to nats user
-USER nats
-
-# Expose NATS ports
-EXPOSE 4222 8222
+# Create necessary directories with proper permissions
+RUN mkdir -p /etc/nats/creds /etc/nats/certs /etc/nats/jwt && \
+    chmod 700 /etc/nats/creds /etc/nats/certs /etc/nats/jwt
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
