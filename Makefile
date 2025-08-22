@@ -42,6 +42,7 @@ help: ## Show this help message
 	@echo "$(YELLOW)Examples:$(NC)"
 	@echo "  make build                    # Build the Docker image"
 	@echo "  make run                      # Run NATS server locally"
+	@echo "  make security-scan            # Run security vulnerability scan"
 	@echo "  make deploy-prod              # Deploy to production"
 	@echo "  make setup-creds              # Setup credentials directory"
 
