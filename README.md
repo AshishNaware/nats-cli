@@ -240,6 +240,7 @@ Access dashboards:
 
 1. **GitHub Token**: Create a Personal Access Token with `write:packages` permission
 2. **Repository**: Ensure your repository is public or you have package write permissions
+3. **Username**: Your GitHub username will be automatically converted to lowercase for Docker compatibility
 
 ### Setup
 
@@ -276,16 +277,20 @@ make quick-release
 ### Using the Published Image
 
 ```bash
-# Pull the image
-docker pull ghcr.io/yourusername/nats-server:latest
+# Pull the image (note: username is automatically converted to lowercase)
+docker pull ghcr.io/ashishnaware/nats-server:latest
 
 # Run the image
 docker run -d \
   --name nats-server \
   -p 4222:4222 \
   -p 8222:8222 \
-  ghcr.io/yourusername/nats-server:latest
+  ghcr.io/ashishnaware/nats-server:latest
 ```
+
+**Note**: Your GitHub username is automatically converted to lowercase for Docker compatibility. For example:
+- `AshishNaware` becomes `ashishnaware`
+- `Ashish Naware` becomes `ashishnaware`
 
 ### Automated Publishing
 
@@ -358,6 +363,8 @@ curl http://localhost:8222/healthz
 1. **Permission denied**: Ensure credentials files have correct permissions
 2. **Connection refused**: Check if ports are properly exposed
 3. **Authentication failed**: Verify credentials configuration
+4. **Invalid repository name**: Username is automatically converted to lowercase for Docker compatibility
+5. **Buildx failed with uppercase error**: Run `./scripts/test-username.sh` to verify username conversion
 
 ## Contributing
 
